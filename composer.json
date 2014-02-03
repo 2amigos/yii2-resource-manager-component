@@ -1,0 +1,25 @@
+{
+    "name": "2amigos/yii2-resource-manager-component",
+    "description": "Resource manager handling uploads  .",
+    "keywords": ["yii", "extension", "component", "resource"],
+    "homepage": "https://github.com/2amigos/yii2-resource-manager-component",
+    "type": "yii2-extension",
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Antonio Ramirez",
+            "email": "amigo.cobos@gmail.com",
+            "homepage" : "http://2amigos.us"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "yiisoft/yii2": "*",
+        "aws/aws-sdk-php": "2.5.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "dosamigos\\resourcemanager\\": ""
+        }
+    }
+}
