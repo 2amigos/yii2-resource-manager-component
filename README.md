@@ -53,7 +53,7 @@ Done... Now, to save a resource to AWS S3 server, we just need to do the followi
 ```
 // Defensive code checks not written for the example
 $resource = yii\web\UploadedFile::getInstanceByName('instance-name');
-$saveAsName = md5($resource->name) . '.' . $resource->getExtension();
+$name = md5($resource->name) . '.' . $resource->getExtension();
 if(\Yii::$app->resourceManager->save($resource, $name)) {
     echo 'Done...';
 }
