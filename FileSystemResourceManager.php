@@ -12,13 +12,13 @@ use Yii;
 
 /**
  *
- * SimpleResourceManager handles resource to upload/uploaded to a server folder.
+ * FileSystemResourceManager handles resource to upload/uploaded to a server folder.
  *
  * @author Antonio Ramirez <amigo.cobos@gmail.com>
  * @link http://www.ramirezcobos.com/
  * @link http://www.2amigos.us/
  */
-class SimpleResourceManager extends Component implements ResourceManagerInterface
+class FileSystemResourceManager extends Component implements ResourceManagerInterface
 {
 	public $directory = 'uploads';
 
