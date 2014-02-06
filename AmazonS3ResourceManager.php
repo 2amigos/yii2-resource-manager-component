@@ -66,7 +66,7 @@ class AmazonS3ResourceManager extends Component implements ResourceManagerInterf
 	 * @param string $name the name of the file
 	 * @param array $options extra options for the object to save on the bucket. For more information, please visit
 	 * [[http://docs.aws.amazon.com/aws-sdk-php/latest/class-Aws.S3.S3Client.html#_putObject]]
-	 * @return boolean
+	 * @return \Guzzle\Service\Resource\Model
 	 */
 	public function save($file, $name, $options = [])
 	{
