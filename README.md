@@ -66,6 +66,6 @@ Notes
 Looking for a version for the Yii 1.1? There is dedicated repository for it:
 [2amigos/resource-manager](https://github.com/2amigos/resource-manager).
 
-> [![2amigOS!](http://www.gravatar.com/avatar/55363394d72945ff7ed312556ec041e0.png)](http://www.2amigos.us)  
-<i>Web development has never been so fun!</i>
+> [![2amigOS!](http://www.gravatar.com/avatar/55363394d72945ff7ed312556ec041e0.png)](http://www.2amigos.us)<br>
+<i>Web development has never been so fun!</i><br>
 [www.2amigos.us](http://www.2amigos.us)
