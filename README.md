@@ -1,5 +1,7 @@
 Resource Manager component for Yii 2
-===========================
+====================================
+
+[![Latest Stable Version](https://poser.pugx.org/2amigos/yii2-resource-manager-component/v/stable.svg)](https://packagist.org/packages/2amigos/yii2-ckeditor-widget) [![Total Downloads](https://poser.pugx.org/2amigos/yii2-resource-manager-component/downloads.svg)](https://packagist.org/packages/2amigos/yii2-resource-manager-component) [![Latest Unstable Version](https://poser.pugx.org/2amigos/yii2-resource-manager-component/v/unstable.svg)](https://packagist.org/packages/2amigos/yii2-resource-manager-component) [![License](https://poser.pugx.org/2amigos/yii2-resource-manager-component/license.svg)](https://packagist.org/packages/2amigos/yii2-resource-manager-component)
 
 This extension allows you to manage resources. Currently supports two possible scenarios: 
 
