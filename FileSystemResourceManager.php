@@ -22,7 +22,7 @@ class FileSystemResourceManager extends Component implements ResourceManagerInte
 {
 	public $directory = 'uploads';
 
-	private $_basePath;
+	private $_basePath = '@webroot';
 	private $_baseUrl;
 
 	/**
@@ -33,17 +33,44 @@ class FileSystemResourceManager extends Component implements ResourceManagerInte
 	 *  - `folder` : whether we should create a subfolder where to save the file
 	 * @return boolean
 	 */
-	public function save($file, $name, $options = [])
-	{
-		$folder = ArrayHelper::getValue($options, 'folder');
-		$path = $folder
-			? $this->getBasePath() . DIRECTORY_SEPARATOR . $folder . ltrim($name, DIRECTORY_SEPARATOR)
-			: $this->getBasePath() . DIRECTORY_SEPARATOR . ltrim($name, DIRECTORY_SEPARATOR);
-		@mkdir(dirname($path), 0777, true);
-
+	public function save($file, $name, $options = []) {
+		$path = getSavePath($name, $options);
+		
 		return $file->saveAs($path);
 	}
+	
+	/**
+	 * Saves a file
+	 * @param string $data the file content
+	 * @param string $name the name of the file
+	 * @param array $options
+	 * @return boolean
+	 */
+	public function saveBlob($data, $name, $options = []) {	    
+	    $path = getSavePath($name, $options);
+	    
+	    return file_put_contents($path, $data);
+	}
 
+	/**
+	 * Return full path to file
+	 * @param string $name the name of the file
+	 * @param array $options
+	 * @return string
+	 */
+	private function getSavePath($name, $options = []) {
+	    $folder = ArrayHelper::getValue($options, 'folder');
+	    $path = $folder
+	    ? $this->getBasePath() . DIRECTORY_SEPARATOR . $folder . ltrim($name, DIRECTORY_SEPARATOR)
+	    : $this->getBasePath() . DIRECTORY_SEPARATOR . ltrim($name, DIRECTORY_SEPARATOR);
+	     
+	    $path = Yii::getAlias($path);
+	     
+	    @mkdir(dirname($path), 0777, true);
+	    
+	    return $path;
+	}
+	
 	/**
 	 * Removes a file
 	 * @param string $name the name of the file to remove
@@ -51,7 +78,7 @@ class FileSystemResourceManager extends Component implements ResourceManagerInte
 	 */
 	public function delete($name)
 	{
-		return $this->fileExists($name) ? @unlink($this->getBasePath() . DIRECTORY_SEPARATOR . $name) : false;
+		return $this->fileExists($name) ? @unlink($this->getSavePath($name)) : false;
 	}
 
 	/**
@@ -61,7 +88,7 @@ class FileSystemResourceManager extends Component implements ResourceManagerInte
 	 */
 	public function fileExists($name)
 	{
-		return file_exists($this->getBasePath() . DIRECTORY_SEPARATOR . $name);
+		return file_exists($this->getSavePath($name));
 	}
 
 	/**
@@ -80,10 +107,7 @@ class FileSystemResourceManager extends Component implements ResourceManagerInte
 	 */
 	public function getBasePath()
 	{
-		if ($this->_basePath === null) {
-			$this->_basePath = Yii::$app->getBasePath() . DIRECTORY_SEPARATOR . $this->directory;
-		}
-		return $this->_basePath;
+		return $this->_basePath . DIRECTORY_SEPARATOR . $this->directory;
 	}
 
 	/**

@@ -23,6 +23,15 @@ interface ResourceManagerInterface
 	 * @return boolean
 	 */
 	public function save($file, $name, $options = []);
+	
+	/**
+	 * Saves a file
+	 * @param string $data the file content
+	 * @param string $name the name of the file
+	 * @param array $options
+	 * @return boolean
+	 */
+	public function saveBlob($data, $name, $options = []);
 
 	/**
 	 * Removes a file
