@@ -20,10 +20,8 @@ use Yii;
  */
 class FileSystemResourceManager extends Component implements ResourceManagerInterface
 {
-	public $directory = 'uploads';
-
-	private $_basePath;
-	private $_baseUrl;
+	private $_basePath = '@webroot/uploads';
+	private $_baseUrl = '@web/uploads';
 
 	/**
 	 * Saves a file
@@ -31,14 +29,22 @@ class FileSystemResourceManager extends Component implements ResourceManagerInte
 	 * @param string $name the name of the file. If empty, it will be set to the name of the uploaded file
 	 * @param array $options to save the file. The options can be any of the following:
 	 *  - `folder` : whether we should create a subfolder where to save the file
+	 *  - `override` : whether we allow rewriting a existing file
 	 * @return boolean
 	 */
 	public function save($file, $name, $options = [])
 	{
-		$folder = ArrayHelper::getValue($options, 'folder');
-		$path = $folder
-			? $this->getBasePath() . DIRECTORY_SEPARATOR . $folder . ltrim($name, DIRECTORY_SEPARATOR)
-			: $this->getBasePath() . DIRECTORY_SEPARATOR . ltrim($name, DIRECTORY_SEPARATOR);
+		$name = ltrim($name, DIRECTORY_SEPARATOR);
+		
+		if ($folder = trim(ArrayHelper::getValue($options, 'folder'), DIRECTORY_SEPARATOR)) {
+			$name = $folder . DIRECTORY_SEPARATOR . $name;
+		}
+		
+		if (!ArrayHelper::getValue($options, 'override', true) && $this->fileExists($name)) {
+			return false;
+		}
+		
+		$path = $this->getBasePath() . DIRECTORY_SEPARATOR . $name;
 		@mkdir(dirname($path), 0777, true);
 
 		return $file->saveAs($path);
@@ -80,10 +86,7 @@ class FileSystemResourceManager extends Component implements ResourceManagerInte
 	 */
 	public function getBasePath()
 	{
-		if ($this->_basePath === null) {
-			$this->_basePath = Yii::$app->getBasePath() . DIRECTORY_SEPARATOR . $this->directory;
-		}
-		return $this->_basePath;
+		return Yii::getAlias($this->_basePath);
 	}
 
 	/**
@@ -101,10 +104,7 @@ class FileSystemResourceManager extends Component implements ResourceManagerInte
 	 */
 	public function getBaseUrl()
 	{
-		if ($this->_baseUrl === null) {
-			$this->_baseUrl = Yii::$app->getRequest()->getBaseUrl() . '/' . $this->directory;
-		}
-		return $this->_baseUrl;
+		return Yii::getAlias($this->_baseUrl);
 	}
 
 	/**
