@@ -115,11 +115,46 @@ class AmazonS3ResourceManager extends Component implements ResourceManagerInterf
 	/**
 	 * Returns the url of the file or empty string if the file does not exists.
 	 * @param string $name the key name of the file to access
+	 * @param mixed $expires The time at which the URL should expire
 	 * @return string
 	 */
-	public function getUrl($name)
+	public function getUrl($name, $expires = NULL)
 	{
-		return $this->getClient()->getObjectUrl($this->bucket, $name);
+		return $this->getClient()->getObjectUrl($this->bucket, $name, $expires);
+	}
+	
+	// to implement
+/*	public function deleteMatchingObjects(string $prefix = '', string $regex = '', array $options = array() ) {
+		$this->getClient()->deleteMatchingObjects($this->bucket);
+	}*/
+
+	/**
+	 * Return the full path a file names only (no directories) within s3 virtual "directory" by treating s3 keys as path names.
+	 * @param string $directory the prefix of keys to find
+	 * @return array of ['name' => string, 'type' => string, 'size' => string (int)]
+	 */
+	public function listFiles($directory) {
+		$files = [];
+		
+		$iterator = $this->getClient()->getIterator('ListObjects', [
+			'Bucket' => $this->bucket,
+			'Prefix' => $directory,
+		]);
+
+		foreach ($iterator as $object) {
+			// don't return directories
+			if(substr($object['Key'], -1) != '/') {
+				$file = [
+					'path' => $object['Key'],
+					'name' => substr($object['Key'], strrpos($object['Key'], '/' ) + 1),
+					'type' => $object['StorageClass'],
+					'size' => $object['Size'],
+				];
+				$files[] = $file;
+			}
+		}
+		
+		return $files;
 	}
 
 	/**
