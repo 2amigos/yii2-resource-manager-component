@@ -123,15 +123,19 @@ class AmazonS3ResourceManager extends Component implements ResourceManagerInterf
 		return $this->getClient()->getObjectUrl($this->bucket, $name, $expires);
 	}
 	
-	// to implement
-/*	public function deleteMatchingObjects(string $prefix = '', string $regex = '', array $options = array() ) {
-		$this->getClient()->deleteMatchingObjects($this->bucket);
-	}*/
+	/**
+	 * Delete all objects that match a specific key prefix.
+	 * @param string $prefix delete only objects under this key prefix
+	 * @return type
+	 */
+	public function deleteMatchingObjects($prefix) {
+		return $this->getClient()->deleteMatchingObjects($this->bucket, $prefix);
+	}
 
 	/**
 	 * Return the full path a file names only (no directories) within s3 virtual "directory" by treating s3 keys as path names.
 	 * @param string $directory the prefix of keys to find
-	 * @return array of ['name' => string, 'type' => string, 'size' => string (int)]
+	 * @return array of ['path' => string, 'name' => string, 'type' => string, 'size' => int]
 	 */
 	public function listFiles($directory) {
 		$files = [];
@@ -148,7 +152,7 @@ class AmazonS3ResourceManager extends Component implements ResourceManagerInterf
 					'path' => $object['Key'],
 					'name' => substr($object['Key'], strrpos($object['Key'], '/' ) + 1),
 					'type' => $object['StorageClass'],
-					'size' => $object['Size'],
+					'size' => (int)$object['Size'],
 				];
 				$files[] = $file;
 			}
