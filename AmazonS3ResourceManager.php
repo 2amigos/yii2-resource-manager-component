@@ -77,7 +77,7 @@ class AmazonS3ResourceManager extends Component implements ResourceManagerInterf
 			'ACL' => CannedAcl::PUBLIC_READ // default to ACL public read
 		], $options);
 
-		$this->getClient()->putObject($options);
+		return $this->getClient()->putObject($options);
 	}
 
 	/**
