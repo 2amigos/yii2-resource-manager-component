@@ -77,7 +77,7 @@ class AmazonS3ResourceManager extends Component implements ResourceManagerInterf
 			'ACL' => CannedAcl::PUBLIC_READ // default to ACL public read
 		], $options);
 
-		$this->getClient()->putObject($options);
+		return $this->getClient()->putObject($options);
 	}
 	
 	/**
@@ -136,11 +136,50 @@ class AmazonS3ResourceManager extends Component implements ResourceManagerInterf
 	/**
 	 * Returns the url of the file or empty string if the file does not exists.
 	 * @param string $name the key name of the file to access
+	 * @param mixed $expires The time at which the URL should expire
 	 * @return string
 	 */
-	public function getUrl($name)
+	public function getUrl($name, $expires = NULL)
 	{
-		return $this->getClient()->getObjectUrl($this->bucket, $name);
+		return $this->getClient()->getObjectUrl($this->bucket, $name, $expires);
+	}
+	
+	/**
+	 * Delete all objects that match a specific key prefix.
+	 * @param string $prefix delete only objects under this key prefix
+	 * @return type
+	 */
+	public function deleteMatchingObjects($prefix) {
+		return $this->getClient()->deleteMatchingObjects($this->bucket, $prefix);
+	}
+
+	/**
+	 * Return the full path a file names only (no directories) within s3 virtual "directory" by treating s3 keys as path names.
+	 * @param string $directory the prefix of keys to find
+	 * @return array of ['path' => string, 'name' => string, 'type' => string, 'size' => int]
+	 */
+	public function listFiles($directory) {
+		$files = [];
+		
+		$iterator = $this->getClient()->getIterator('ListObjects', [
+			'Bucket' => $this->bucket,
+			'Prefix' => $directory,
+		]);
+
+		foreach ($iterator as $object) {
+			// don't return directories
+			if(substr($object['Key'], -1) != '/') {
+				$file = [
+					'path' => $object['Key'],
+					'name' => substr($object['Key'], strrpos($object['Key'], '/' ) + 1),
+					'type' => $object['StorageClass'],
+					'size' => (int)$object['Size'],
+				];
+				$files[] = $file;
+			}
+		}
+		
+		return $files;
 	}
 
 	/**

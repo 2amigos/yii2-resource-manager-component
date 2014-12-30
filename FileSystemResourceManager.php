@@ -21,9 +21,8 @@ use Yii;
 class FileSystemResourceManager extends Component implements ResourceManagerInterface
 {
 	public $directory = 'uploads';
-
-	private $_basePath = '@webroot';
-	private $_baseUrl;
+	private $_basePath = '@webroot/uploads';
+	private $_baseUrl = '@web/uploads';
 
 	/**
 	 * Saves a file
@@ -31,11 +30,11 @@ class FileSystemResourceManager extends Component implements ResourceManagerInte
 	 * @param string $name the name of the file. If empty, it will be set to the name of the uploaded file
 	 * @param array $options to save the file. The options can be any of the following:
 	 *  - `folder` : whether we should create a subfolder where to save the file
+	 *  - `override` : whether we allow rewriting a existing file
 	 * @return boolean
 	 */
 	public function save($file, $name, $options = []) {
-		$path = getSavePath($name, $options);
-		
+		$path = $this->getSavePath($name, $options);
 		return $file->saveAs($path);
 	}
 	
@@ -47,7 +46,7 @@ class FileSystemResourceManager extends Component implements ResourceManagerInte
 	 * @return boolean
 	 */
 	public function saveBlob($data, $name, $options = []) {	    
-	    $path = getSavePath($name, $options);
+	    $path = $this->getSavePath($name, $options);
 	    
 	    return file_put_contents($path, $data);
 	}
@@ -107,7 +106,7 @@ class FileSystemResourceManager extends Component implements ResourceManagerInte
 	 */
 	public function getBasePath()
 	{
-		return $this->_basePath . DIRECTORY_SEPARATOR . $this->directory;
+		return Yii::getAlias($this->_basePath);
 	}
 
 	/**
@@ -125,10 +124,7 @@ class FileSystemResourceManager extends Component implements ResourceManagerInte
 	 */
 	public function getBaseUrl()
 	{
-		if ($this->_baseUrl === null) {
-			$this->_baseUrl = Yii::$app->getRequest()->getBaseUrl() . '/' . $this->directory;
-		}
-		return $this->_baseUrl;
+		return Yii::getAlias($this->_baseUrl);
 	}
 
 	/**
