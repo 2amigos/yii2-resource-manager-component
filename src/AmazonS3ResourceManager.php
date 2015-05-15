@@ -1,9 +1,10 @@
 <?php
 /**
- * @link http://2amigos.us
- * @copyright Copyright (c) 2013 2amigOS! Consulting Group LLC
- * @license http://www.opensource.org/licenses/bsd-license.php New BSD License
+ * @link https://github.com/2amigos/yii2-resource-manager-component
+ * @copyright Copyright (c) 2013-2015 2amigOS! Consulting Group LLC
+ * @license http://opensource.org/licenses/BSD-3-Clause
  */
+
 namespace dosamigos\resourcemanager;
 
 use Aws\S3\Enum\CannedAcl;
@@ -122,7 +123,7 @@ class AmazonS3ResourceManager extends Component implements ResourceManagerInterf
 	{
 		return $this->getClient()->getObjectUrl($this->bucket, $name, $expires);
 	}
-	
+
 	/**
 	 * Delete all objects that match a specific key prefix.
 	 * @param string $prefix delete only objects under this key prefix
@@ -139,7 +140,7 @@ class AmazonS3ResourceManager extends Component implements ResourceManagerInterf
 	 */
 	public function listFiles($directory) {
 		$files = [];
-		
+
 		$iterator = $this->getClient()->getIterator('ListObjects', [
 			'Bucket' => $this->bucket,
 			'Prefix' => $directory,
@@ -157,7 +158,7 @@ class AmazonS3ResourceManager extends Component implements ResourceManagerInterf
 				$files[] = $file;
 			}
 		}
-		
+
 		return $files;
 	}
 

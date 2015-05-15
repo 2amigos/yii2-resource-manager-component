@@ -1,9 +1,10 @@
 <?php
 /**
- * @link http://2amigos.us
- * @copyright Copyright (c) 2013 2amigOS! Consulting Group LLC
- * @license http://www.opensource.org/licenses/bsd-license.php New BSD License
+ * @link https://github.com/2amigos/yii2-resource-manager-component
+ * @copyright Copyright (c) 2013-2015 2amigOS! Consulting Group LLC
+ * @license http://opensource.org/licenses/BSD-3-Clause
  */
+
 namespace dosamigos\resourcemanager;
 
 use yii\helpers\ArrayHelper;
@@ -35,15 +36,15 @@ class FileSystemResourceManager extends Component implements ResourceManagerInte
 	public function save($file, $name, $options = [])
 	{
 		$name = ltrim($name, DIRECTORY_SEPARATOR);
-		
+
 		if ($folder = trim(ArrayHelper::getValue($options, 'folder'), DIRECTORY_SEPARATOR)) {
 			$name = $folder . DIRECTORY_SEPARATOR . $name;
 		}
-		
+
 		if (!ArrayHelper::getValue($options, 'override', true) && $this->fileExists($name)) {
 			return false;
 		}
-		
+
 		$path = $this->getBasePath() . DIRECTORY_SEPARATOR . $name;
 		@mkdir(dirname($path), 0777, true);
 
