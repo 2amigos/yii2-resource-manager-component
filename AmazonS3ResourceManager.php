@@ -44,6 +44,11 @@ class AmazonS3ResourceManager extends Component implements ResourceManagerInterf
 	private $_client;
 
 	/**
+	 * @var boolean V4 signature
+	 */
+	public $enableV4=false;
+
+	/**
 	 * @inheritdoc
 	 */
 	public function init()
@@ -168,10 +173,14 @@ class AmazonS3ResourceManager extends Component implements ResourceManagerInterf
 	public function getClient()
 	{
 		if ($this->_client === null) {
-			$this->_client = S3Client::factory([
+			$settings=[
 				'key' => $this->key,
 				'secret' => $this->secret
-			]);
+			];
+			if($this->enableV4)
+				$settings['signature']='v4';
+			
+			$this->_client = S3Client::factory($settings);
 		}
 		return $this->_client;
 	}
