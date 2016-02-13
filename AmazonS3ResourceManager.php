@@ -84,6 +84,27 @@ class AmazonS3ResourceManager extends Component implements ResourceManagerInterf
 
 		return $this->getClient()->putObject($options);
 	}
+	
+	/**
+	 * Saves a file
+	 * @param string $data the file content
+	 * file.
+	 * @param string $name the name of the file
+	 * @param array $options extra options for the object to save on the bucket. For more information, please visit
+	 * [[http://docs.aws.amazon.com/aws-sdk-php/latest/class-Aws.S3.S3Client.html#_putObject]]
+	 * @return \Guzzle\Service\Resource\Model
+	 */
+	public function saveBlob($data, $name, $options = [])
+	{
+	    $options = ArrayHelper::merge([
+	            'Bucket' => $this->bucket,
+	            'Key' => $name,
+	            'Body' => $data,
+	            'ACL' => CannedAcl::PUBLIC_READ // default to ACL public read
+	            ], $options);
+	
+	    $this->getClient()->putObject($options);
+	}
 
 	/**
 	 * Removes a file
