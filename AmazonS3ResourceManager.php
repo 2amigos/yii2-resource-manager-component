@@ -79,7 +79,8 @@ class AmazonS3ResourceManager extends Component implements ResourceManagerInterf
 			'Bucket' => $this->bucket,
 			'Key' => $name,
 			'SourceFile' => $file->tempName,
-			'ACL' => CannedAcl::PUBLIC_READ // default to ACL public read
+			'ACL' => CannedAcl::PUBLIC_READ, // default to ACL public read
+			'ContentType' => $file->type
 		], $options);
 
 		return $this->getClient()->putObject($options);
@@ -99,6 +100,25 @@ class AmazonS3ResourceManager extends Component implements ResourceManagerInterf
 
 		return $result['DeleteMarker'];
 	}
+
+	/**
+     * Creates a copy of a file from original key to new key
+     * @param string $originalFileName the file name / path that you wish to copy
+     * @param string $newFileName target destination for file name / path
+     * @param array $options
+     * @return \Guzzle\Service\Resource\Model
+     */
+    public function copy($originalFileName, $newFileName, $options = []) {
+
+        $options = ArrayHelper::merge([
+                    'Bucket' => $this->bucket,
+                    'Key' => $newFileName,
+                    'CopySource' => Html::encode($this->bucket."/".$originalFileName),
+                    'ACL' => CannedAcl::PUBLIC_READ, // default to ACL public read - allows public to open file
+                    ], $options);
+
+        return $this->getClient()->copyObject($options);
+    }
 
 	/**
 	 * Checks whether a file exists or not. This method only works for public resources, private resources will throw
@@ -127,7 +147,7 @@ class AmazonS3ResourceManager extends Component implements ResourceManagerInterf
 	{
 		return $this->getClient()->getObjectUrl($this->bucket, $name, $expires);
 	}
-	
+
 	/**
 	 * Delete all objects that match a specific key prefix.
 	 * @param string $prefix delete only objects under this key prefix
@@ -144,7 +164,7 @@ class AmazonS3ResourceManager extends Component implements ResourceManagerInterf
 	 */
 	public function listFiles($directory) {
 		$files = [];
-		
+
 		$iterator = $this->getClient()->getIterator('ListObjects', [
 			'Bucket' => $this->bucket,
 			'Prefix' => $directory,
@@ -162,7 +182,7 @@ class AmazonS3ResourceManager extends Component implements ResourceManagerInterf
 				$files[] = $file;
 			}
 		}
-		
+
 		return $files;
 	}
 
@@ -179,7 +199,7 @@ class AmazonS3ResourceManager extends Component implements ResourceManagerInterf
 			];
 			if($this->enableV4)
 				$settings['signature']='v4';
-			
+
 			$this->_client = S3Client::factory($settings);
 		}
 		return $this->_client;
