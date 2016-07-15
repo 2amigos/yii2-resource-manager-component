@@ -79,7 +79,8 @@ class AmazonS3ResourceManager extends Component implements ResourceManagerInterf
 			'Bucket' => $this->bucket,
 			'Key' => $name,
 			'SourceFile' => $file->tempName,
-			'ACL' => CannedAcl::PUBLIC_READ // default to ACL public read
+			'ACL' => CannedAcl::PUBLIC_READ, // default to ACL public read
+			'ContentType' => $file->type
 		], $options);
 
 		return $this->getClient()->putObject($options);
@@ -127,7 +128,7 @@ class AmazonS3ResourceManager extends Component implements ResourceManagerInterf
 	{
 		return $this->getClient()->getObjectUrl($this->bucket, $name, $expires);
 	}
-	
+
 	/**
 	 * Delete all objects that match a specific key prefix.
 	 * @param string $prefix delete only objects under this key prefix
@@ -144,7 +145,7 @@ class AmazonS3ResourceManager extends Component implements ResourceManagerInterf
 	 */
 	public function listFiles($directory) {
 		$files = [];
-		
+
 		$iterator = $this->getClient()->getIterator('ListObjects', [
 			'Bucket' => $this->bucket,
 			'Prefix' => $directory,
@@ -162,7 +163,7 @@ class AmazonS3ResourceManager extends Component implements ResourceManagerInterf
 				$files[] = $file;
 			}
 		}
-		
+
 		return $files;
 	}
 
@@ -179,7 +180,7 @@ class AmazonS3ResourceManager extends Component implements ResourceManagerInterf
 			];
 			if($this->enableV4)
 				$settings['signature']='v4';
-			
+
 			$this->_client = S3Client::factory($settings);
 		}
 		return $this->_client;
