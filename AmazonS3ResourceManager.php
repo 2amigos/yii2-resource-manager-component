@@ -102,6 +102,25 @@ class AmazonS3ResourceManager extends Component implements ResourceManagerInterf
 	}
 
 	/**
+     * Creates a copy of a file from original key to new key
+     * @param string $originalFileName the file name / path that you wish to copy
+     * @param string $newFileName target destination for file name / path
+     * @param array $options
+     * @return \Guzzle\Service\Resource\Model
+     */
+    public function copy($originalFileName, $newFileName, $options = []) {
+
+        $options = ArrayHelper::merge([
+                    'Bucket' => $this->bucket,
+                    'Key' => $newFileName,
+                    'CopySource' => Html::encode($this->bucket."/".$originalFileName),
+                    'ACL' => CannedAcl::PUBLIC_READ, // default to ACL public read - allows public to open file
+                    ], $options);
+
+        return $this->getClient()->copyObject($options);
+    }
+
+	/**
 	 * Checks whether a file exists or not. This method only works for public resources, private resources will throw
 	 * a 403 error exception.
 	 * @param string $name the name of the file
